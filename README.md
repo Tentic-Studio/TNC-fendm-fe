@@ -1,7 +1,7 @@
 <div align="center">
 
 # 🛒 FANDM — Frontend
-### Stock of Order Management
+### Food and Stock of Order Management
 
 > Antarmuka modern untuk mengelola order, stok bahan baku, produksi, dan keuangan usaha makanan rumahan — dalam satu dashboard yang simpel.
 
