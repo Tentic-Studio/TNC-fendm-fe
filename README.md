@@ -1,77 +1,51 @@
 <div align="center">
 
-# 🍽️ FANDM
-### Food & Beverage Management System
+# 🛒 SOOM — Frontend
+### Stock of Order Management
 
-> Solusi manajemen operasional **terintegrasi** untuk bisnis F&B modern — dari stok bahan baku hingga produksi, semua dalam satu platform.
+> Antarmuka modern untuk mengelola order, stok bahan baku, produksi, dan keuangan usaha makanan rumahan — dalam satu dashboard yang simpel.
 
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Zustand](https://img.shields.io/badge/Zustand-State_Management-orange?style=for-the-badge)
+![React](https://img.shields.io/badge/React-TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![PrimeReact](https://img.shields.io/badge/PrimeReact-UI_Library-6366F1?style=for-the-badge)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-v5-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Phase_1-yellow?style=for-the-badge)
 
 <br/>
 
-Dikembangkan dengan ❤️ oleh **[Tentic Studio](https://github.com/tentic-studio)**
+Bagian dari proyek **SOOM** · Dikembangkan oleh **Tentic Studio**
 
 </div>
 
 ---
 
-## ✨ Tentang Proyek
-
-**FANDM** (*Food and Material Management*) adalah aplikasi manajemen operasional yang dirancang khusus untuk sektor **Food & Beverage**. Mulai dari pelacakan stok bahan baku secara real-time, pengelolaan resep, hingga otomatisasi proses produksi — semua bisa dilakukan dari satu dasbor yang intuitif.
-
----
-
-## 🚀 Fitur Utama
-
-| Fitur | Deskripsi |
-|:---:|:---|
-| 📦 **Manajemen Bahan Baku** | Lacak stok bahan baku (*raw materials*) secara real-time dengan akurasi tinggi |
-| ⚙️ **Sistem Produksi & Resep** | Pengurangan stok otomatis berdasarkan resep saat proses produksi dijalankan |
-| 📊 **Dashboard Visual** | Visualisasi data stok dan grafik tren interaktif menggunakan Chart.js |
-| ✅ **Validasi Form Cerdas** | Validasi input yang kuat dan responsif untuk bahan baku dan data produk |
-
----
-
 ## 🛠️ Tech Stack
-
-Dibangun di atas ekosistem teknologi modern berbasis **React**:
 
 | Kategori | Teknologi |
 | :--- | :--- |
-| 🖼️ **Framework UI** | React 19 |
-| 🎨 **Styling & Komponen** | PrimeReact, PrimeFlex, PrimeIcons, Lucide React |
+| 🖼️ **Framework** | React + TypeScript |
+| 🎨 **UI Components** | PrimeReact, PrimeFlex, PrimeIcons |
 | 🗃️ **State Management** | Zustand |
-| 🔄 **Data Fetching** | TanStack Query (React Query) v5 & Axios |
-| 🧭 **Routing** | React Router Dom v7 |
-| 🔍 **Validasi** | React Hook Form & Zod |
-| 📈 **Visualisasi** | Chart.js |
+| 🔄 **Data Fetching** | TanStack Query v5 & Axios |
+| 🧭 **Routing** | React Router Dom |
+| 🔍 **Validasi Form** | React Hook Form & Zod |
 
 ---
 
-## 📦 Instalasi & Menjalankan Proyek
+## 📦 Instalasi
 
-Pastikan **Node.js** sudah terinstal di sistem kamu sebelum memulai.
-
-**1. Clone Repositori**
 ```bash
-git clone https://github.com/username/fandm-fe.git
-cd fandm-fe
-```
+# Clone repositori
+git clone https://github.com/username/soom-fe.git
+cd soom-fe
 
-**2. Instal Dependensi**
-```bash
+# Install dependensi
 npm install
-```
 
-**3. Jalankan di Mode Development**
-```bash
+# Jalankan development server
 npm run dev
 ```
 
-> Aplikasi akan berjalan di `http://localhost:5173` secara default.
+> Pastikan backend SOOM sudah berjalan. Buat file `.env` dari `.env.example` dan sesuaikan `VITE_API_URL`.
 
 ---
 
@@ -79,27 +53,30 @@ npm run dev
 
 ```
 src/
-├── 📁 api/            # Konfigurasi Axios & API Services
-├── 📁 components/     # Komponen UI yang dapat digunakan kembali
-├── 📁 hooks/          # Custom hooks (termasuk query hooks)
-├── 📁 pages/          # View & halaman utama aplikasi
-├── 📁 store/          # Zustand global store
-├── 📁 utils/          # Skema validasi Zod & fungsi pembantu
-└── 📄 App.jsx         # Entry point & konfigurasi router
+├── api/            # Konfigurasi Axios & API services
+├── components/     # Komponen UI reusable
+├── hooks/          # Custom & query hooks
+├── pages/          # Halaman utama aplikasi
+├── store/          # Zustand global store
+├── utils/          # Skema Zod & fungsi pembantu
+└── App.tsx         # Entry point & konfigurasi router
 ```
 
 ---
 
-## 🤝 Kontribusi
+## 🗺️ Halaman Utama
 
-Kontribusi, isu, dan *feature request* sangat disambut! Jangan ragu untuk membuka [issue](https://github.com/username/fandm-fe/issues) atau mengajukan pull request.
+- **Dashboard** — Ringkasan order, stok kritis, dan grafik pemasukan
+- **Order Management** — Kelola pesanan masuk dengan sistem DP & pelunasan
+- **Stok Bahan Baku** — Pantau stok real-time dengan alert kritis otomatis
+- **Produk & Resep** — Manajemen produk, versi resep, dan kalkulasi modal
+- **Produksi** — Catat produksi *Made to Stock* dengan update stok otomatis
+- **Cash Flow** — Laporan keuangan harian, bulanan, dan tahunan
 
 ---
 
 <div align="center">
 
-**© 2025 Tentic Studio** — Hak cipta dilindungi.
-
-*Dibuat untuk memudahkan pengelolaan bisnis F&B Indonesia* 🇮🇩
+**© 2025 Tentic Studio** · [Backend Repo](https://github.com/username/soom-be)
 
 </div>
