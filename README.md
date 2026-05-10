@@ -42,6 +42,7 @@ Aplikasi ini dibangun menggunakan ekosistem teknologi modern berbasis React:
 
 ## 📂 Struktur Folder
 
+```text
 src/
 ├── api/            # Konfigurasi Axios & API Services
 ├── components/     # Komponen UI reusable
