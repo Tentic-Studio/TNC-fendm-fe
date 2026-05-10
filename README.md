@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🛒 SOOM — Frontend
+# 🛒 FANDM — Frontend
 ### Stock of Order Management
 
 > Antarmuka modern untuk mengelola order, stok bahan baku, produksi, dan keuangan usaha makanan rumahan — dalam satu dashboard yang simpel.
@@ -12,7 +12,7 @@
 
 <br/>
 
-Bagian dari proyek **SOOM** · Dikembangkan oleh **Tentic Studio**
+Bagian dari proyek **FANDM** · Dikembangkan oleh **Tentic Studio**
 
 </div>
 
@@ -35,8 +35,8 @@ Bagian dari proyek **SOOM** · Dikembangkan oleh **Tentic Studio**
 
 ```bash
 # Clone repositori
-git clone https://github.com/username/soom-fe.git
-cd soom-fe
+git clone https://github.com/Tentic-Studio/TNC-fendm-fe.git
+cd TNC-fendm-fe
 
 # Install dependensi
 npm install
@@ -45,7 +45,7 @@ npm install
 npm run dev
 ```
 
-> Pastikan backend SOOM sudah berjalan. Buat file `.env` dari `.env.example` dan sesuaikan `VITE_API_URL`.
+> Pastikan backend FANDM sudah berjalan. Buat file `.env` dari `.env.example` dan sesuaikan `VITE_API_URL`.
 
 ---
 
@@ -77,6 +77,6 @@ src/
 
 <div align="center">
 
-**© 2025 Tentic Studio** · [Backend Repo](https://github.com/username/soom-be)
+**© 2025 Tentic Studio** · [Backend Repo](https://github.com/Tentic-Studio/TNC-fendm-be.git)
 
 </div>
