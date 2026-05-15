@@ -12,7 +12,7 @@ export function AuthBanner() {
   return (
     <div className="left-panel" style={{
       width: "42%", minHeight: "100vh",
-      background: "linear-gradient(160deg, var(--fendm-primary-light) 0%, var(--fendm-primary) 45%, var(--fendm-primary-dark) 100%)",
+      background: "var(--fendm-primary-gradient)",
       display: "flex", flexDirection: "column",
       justifyContent: "space-between", padding: "50px 60px",
       position: "relative", overflow: "hidden", flexShrink: 0,
@@ -42,10 +42,9 @@ export function AuthBanner() {
         pointerEvents: "none"
       }} />
 
-      {/* Logo */}
       <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "12px" }}>
-        <img src={logo} alt="FANDM" style={{ height: "28px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />
-        <span style={{ color: "white", fontWeight: 700, fontSize: "16px", letterSpacing: "0.1em" }}>FENDM</span>
+        <img src={logo} alt="FANDM" style={{ height: "28px", objectFit: "contain" }} />
+        <span style={{ color: "white", fontWeight: 700, fontSize: "16px", letterSpacing: "0.1em" }}>FANDM</span>
       </div>
 
       {/* Hero content */}

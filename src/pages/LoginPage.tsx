@@ -51,9 +51,10 @@ export default function LoginPage() {
     // Dummy auth bypass
     setAuth('dummy-token-fendm', {
       id: '1',
-      name: 'Admin FENDM',
+      name: 'Admin FANDM',
       email: _values.email,
       role: 'admin',
+      tenant: 'Tentic Studio HQ',
     })
     navigate(ROUTES.DASHBOARD)
   }
@@ -89,8 +90,8 @@ export default function LoginPage() {
 
           {/* Logo */}
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <img src={logo} alt="FENDM" style={{ height: '28px', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
-            <span style={{ color: 'white', fontWeight: 700, fontSize: '16px', letterSpacing: '0.1em' }}>FENDM</span>
+            <img src={logo} alt="FANDM" style={{ height: '28px', objectFit: 'contain' }} />
+            <span style={{ color: 'white', fontWeight: 700, fontSize: '16px', letterSpacing: '0.1em' }}>FANDM</span>
           </div>
 
           {/* Hero content */}
@@ -141,7 +142,7 @@ export default function LoginPage() {
           {/* Mobile logo */}
           <div className="mobile-logo" style={{ alignItems: 'center', gap: '10px', marginBottom: '28px' }}>
             <img src={logo} alt="FANDM" style={{ height: '28px' }} />
-            <span style={{ color: 'var(--fendm-text-dark)', fontWeight: 700, fontSize: '18px' }}>FENDM</span>
+            <span style={{ color: 'var(--fendm-text-dark)', fontWeight: 700, fontSize: '18px' }}>FANDM</span>
           </div>
 
           {/* Card */}
