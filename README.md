@@ -1,73 +1,96 @@
-# React + TypeScript + Vite
+<div align="center">
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🛒 FANDM — Frontend
+### Food Enterprise & Distribution Management
 
-Currently, two official plugins are available:
+> Antarmuka modern untuk mengelola order, stok bahan baku, produksi, dan keuangan usaha makanan rumahan — dalam satu dashboard yang simpel dan dinamis.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+![React](https://img.shields.io/badge/React-TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-shadcn/ui-06B6D4?style=for-the-badge)
+![Zustand](https://img.shields.io/badge/Zustand-State-black?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Phase_1-yellow?style=for-the-badge)
 
-## React Compiler
+<br/>
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Bagian dari proyek **FANDM** · Dikembangkan oleh **Tentic Studio**
 
-## Expanding the ESLint configuration
+</div>
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🛠️ Tech Stack
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Berdasarkan `package.json`, berikut adalah teknologi utama yang digunakan dalam proyek ini:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Kategori | Teknologi |
+| :--- | :--- |
+| 🖼️ **Framework** | React 19 + TypeScript (via Vite) |
+| 🎨 **Styling & UI** | Tailwind CSS v4, shadcn/ui, Lucide React |
+| 🗃️ **State Management** | Zustand |
+| 🔄 **Data Fetching & API** | TanStack Query v5 & Axios |
+| 🧭 **Routing** | React Router Dom v6 |
+| 🔍 **Form & Validasi** | React Hook Form & Zod |
+| 📊 **Chart & Animasi** | Recharts, Framer Motion |
+
+---
+
+## 📦 Instalasi & Cara Menjalankan
+
+Ikuti langkah-langkah berikut untuk menjalankan proyek secara lokal:
+
+```bash
+# 1. Clone repositori
+git clone https://github.com/Tentic-Studio/TNC-fendm-fe.git
+cd TNC-fendm-fe
+
+# 2. Install semua dependensi
+pnpm install
+
+# 3. Jalankan development server
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+> **Catatan**: Jika sudah ada API Backend, pastikan untuk membuat file `.env` dan menyesuaikan variabel environment seperti `VITE_API_URL` sesuai kebutuhan.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📂 Struktur Folder
+
+```text
+src/
+├── assets/         # Gambar, logo, dan aset statis lainnya
+├── components/     # Komponen UI yang dapat digunakan kembali (reusable)
+│   ├── auth/       # Komponen khusus halaman Login
+│   ├── common/     # Layout global (Sidebar, Topbar, dll)
+│   ├── profile/    # Komponen profil dan form password
+│   └── ui/         # Komponen dasar dari shadcn/ui (Button, Input, dll)
+├── constants/      # Nilai konstan (misalnya routes.ts)
+├── hooks/          # Custom hooks (misalnya useBreakpoint)
+├── lib/            # Fungsi utility eksternal (misal: utils dari shadcn)
+├── pages/          # Komponen halaman (Dashboard, Login, Profile, Docs, dll)
+├── store/          # Konfigurasi global state menggunakan Zustand
+├── App.tsx         # Entry point aplikasi & registrasi React Router
+├── index.css       # Styling global, variabel CSS, dan konfigurasi Tailwind
+└── main.tsx        # File inisialisasi React DOM
 ```
+
+---
+
+## 🗺️ Fitur Utama Halaman
+
+- **Dashboard** — Ringkasan order terbaru, stok kritis, jadwal produksi yang hampir expired, dan grafik. Dilengkapi efek animasi mikro.
+- **Order Management** — Kelola pesanan pelanggan dari status Pending hingga Selesai.
+- **Stok Bahan Baku** — Pantau ketersediaan stok secara *real-time*.
+- **Produk & Resep** — Manajemen produk, kategori, dan resep dasar (BOM).
+- **Produksi** — Fitur pencatatan produksi *Made to Stock* yang otomatis memotong bahan baku.
+- **Keuangan** — Catatan arus kas otomatis dan pengeluaran.
+- **Dokumentasi** — Halaman panduan internal terintegrasi untuk pengguna (responsif *mobile-first*).
+- **Manajemen Akun** — Halaman profil dan perubahan password, lengkap dengan informasi *Tenant*.
+
+---
+
+<div align="center">
+
+**© 2026 Tentic Studio** · FANDM Dashboard Frontend
+
+</div>
