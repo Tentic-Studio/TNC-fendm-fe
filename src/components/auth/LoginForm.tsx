@@ -57,7 +57,7 @@ export function LoginForm() {
         display: "none", alignItems: "center", gap: "10px", marginBottom: "28px",
       }}>
         <img src={logo} alt="FANDM" style={{ height: "28px" }} />
-        <span style={{ color: "var(--fendm-text-dark)", fontWeight: 700, fontSize: "18px", letterSpacing: "0.1em" }}>FENDM</span>
+        <span style={{ color: "var(--fendm-text-dark)", fontWeight: 700, fontSize: "18px", letterSpacing: "0.1em" }}>FANDM</span>
       </div>
 
       {/* Card */}

@@ -124,8 +124,8 @@ const SidebarContent = ({ collapsed, onClose }: SidebarContentProps) => {
                   }}
                   onMouseOver={e => {
                     if (!isActive) {
-                      e.currentTarget.style.background = 'rgba(255,255,255,0.07)'
-                      e.currentTarget.style.color = 'rgba(255,255,255,0.85)'
+                      e.currentTarget.style.background = '#5D7D94'
+                      e.currentTarget.style.color = '#ffffff'
                     }
                   }}
                   onMouseOut={e => {

@@ -146,7 +146,7 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
             </div>
             {!isMobile && (
               <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--fendm-text-dark)', whiteSpace: 'nowrap' }}>
-                {user?.name ?? 'Admin FENDM'}
+                {user?.name ?? 'Admin FANDM'}
               </span>
             )}
             <ChevronDown size={12} color="var(--fendm-text-muted)" />
