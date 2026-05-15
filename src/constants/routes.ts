@@ -1,0 +1,15 @@
+export const ROUTES = {
+  LOGIN: '/login',
+  DASHBOARD: '/',
+  ORDERS: '/orders',
+  PRODUCTS: '/products',
+  INGREDIENTS: '/ingredients',
+  PRODUCTIONS: '/productions',
+  CASH_FLOW: '/cash-flow',
+  UNITS: '/settings/units',
+  CATEGORIES: '/settings/categories',
+  USERS: '/admin/users',
+  PROFILE: '/profile',
+  CHANGE_PASSWORD: '/profile/change-password',
+  DOCS: '/docs',
+}

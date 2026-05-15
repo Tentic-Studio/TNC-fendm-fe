@@ -1,82 +1,73 @@
-<div align="center">
+# React + TypeScript + Vite
 
-# 🛒 FANDM — Frontend
-### Food and Stock of Order Management
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-> Antarmuka modern untuk mengelola order, stok bahan baku, produksi, dan keuangan usaha makanan rumahan — dalam satu dashboard yang simpel.
+Currently, two official plugins are available:
 
-![React](https://img.shields.io/badge/React-TypeScript-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![PrimeReact](https://img.shields.io/badge/PrimeReact-UI_Library-6366F1?style=for-the-badge)
-![TanStack Query](https://img.shields.io/badge/TanStack_Query-v5-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Phase_1-yellow?style=for-the-badge)
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-<br/>
+## React Compiler
 
-Bagian dari proyek **FANDM** · Dikembangkan oleh **Tentic Studio**
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-</div>
+## Expanding the ESLint configuration
 
----
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-## 🛠️ Tech Stack
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
 
-| Kategori | Teknologi |
-| :--- | :--- |
-| 🖼️ **Framework** | React + TypeScript |
-| 🎨 **UI Components** | PrimeReact, PrimeFlex, PrimeIcons |
-| 🗃️ **State Management** | Zustand |
-| 🔄 **Data Fetching** | TanStack Query v5 & Axios |
-| 🧭 **Routing** | React Router Dom |
-| 🔍 **Validasi Form** | React Hook Form & Zod |
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
 
----
-
-## 📦 Instalasi
-
-```bash
-# Clone repositori
-git clone https://github.com/Tentic-Studio/TNC-fendm-fe.git
-cd TNC-fendm-fe
-
-# Install dependensi
-npm install
-
-# Jalankan development server
-npm run dev
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
 
-> Pastikan backend FANDM sudah berjalan. Buat file `.env` dari `.env.example` dan sesuaikan `VITE_API_URL`.
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
----
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
-## 📂 Struktur Folder
-
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-src/
-├── api/            # Konfigurasi Axios & API services
-├── components/     # Komponen UI reusable
-├── hooks/          # Custom & query hooks
-├── pages/          # Halaman utama aplikasi
-├── store/          # Zustand global store
-├── utils/          # Skema Zod & fungsi pembantu
-└── App.tsx         # Entry point & konfigurasi router
-```
-
----
-
-## 🗺️ Halaman Utama
-
-- **Dashboard** — Ringkasan order, stok kritis, dan grafik pemasukan
-- **Order Management** — Kelola pesanan masuk dengan sistem DP & pelunasan
-- **Stok Bahan Baku** — Pantau stok real-time dengan alert kritis otomatis
-- **Produk & Resep** — Manajemen produk, versi resep, dan kalkulasi modal
-- **Produksi** — Catat produksi *Made to Stock* dengan update stok otomatis
-- **Cash Flow** — Laporan keuangan harian, bulanan, dan tahunan
-
----
-
-<div align="center">
-
-**© 2025 Tentic Studio** · [Backend Repo](https://github.com/Tentic-Studio/TNC-fendm-be.git)
-
-</div>
