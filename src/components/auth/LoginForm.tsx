@@ -107,7 +107,7 @@ export function LoginForm() {
         </div>
 
         {/* ── Form ── */}
-        <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px", textAlign: "left" }}>
 
           {/* Email */}
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
