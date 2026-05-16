@@ -1,33 +1,45 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react"
 import logo from "@/assets/logo_fandm.png"
+import { useAuthStore } from "@/store/useAuthStore"
+import { ROUTES } from "@/constants/routes"
 import { KitchenWatermark } from "./AuthDecorations"
 
+// ─── Validation Schema ────────────────────────────────────────────────────────
 const loginSchema = z.object({
   email: z.string().min(1, "Email wajib diisi").email("Format email tidak valid"),
   password: z.string().min(1, "Password wajib diisi").min(6, "Password minimal 6 karakter"),
 })
 type LoginFormValues = z.infer<typeof loginSchema>
 
+// ─── LoginForm Component ──────────────────────────────────────────────────────
 export function LoginForm() {
+  const navigate = useNavigate()
+  const { setAuth } = useAuthStore()
   const [showPw, setShowPw] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   })
 
-  const onSubmit = async (values: LoginFormValues) => {
-    setLoading(true)
-    try {
-      console.log(values)
-      await new Promise(r => setTimeout(r, 1500)) // TODO: ganti API call
-    } finally {
-      setLoading(false)
-    }
+  // NOTE: Bypass API — langsung login dengan dummy user
+  // TODO: Ganti dengan API call ke backend saat sudah ready
+  const onSubmit = async (_values: LoginFormValues) => {
+    setError("")
+    await new Promise(r => setTimeout(r, 800)) // simulate loading
+    setAuth("dummy-token-fendm", {
+      id: "1",
+      name: "Admin FANDM",
+      email: _values.email,
+      role: "admin",
+      tenant: "Tentic Studio HQ",
+    })
+    navigate(ROUTES.DASHBOARD)
   }
 
   return (
@@ -39,8 +51,7 @@ export function LoginForm() {
       {/* Kitchen watermark */}
       <div style={{
         position: "absolute", right: 0, bottom: 0,
-        width: "380px", height: "460px", pointerEvents: "none",
-        opacity: 0.8
+        width: "380px", height: "460px", pointerEvents: "none", opacity: 0.8,
       }}>
         <KitchenWatermark />
       </div>
@@ -49,7 +60,8 @@ export function LoginForm() {
       <div style={{
         position: "absolute", top: "-100px", right: "-100px",
         width: "350px", height: "350px", borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)", pointerEvents: "none",
+        background: "radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)",
+        pointerEvents: "none",
       }} />
 
       {/* Mobile logo */}
@@ -108,9 +120,10 @@ export function LoginForm() {
             <div style={{ position: "relative" }}>
               <Mail size={16} color="var(--fendm-text-muted)" style={{
                 position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)",
-                pointerEvents: "none", opacity: 0.7
+                pointerEvents: "none", opacity: 0.7,
               }} />
               <input
+                id="email"
                 {...register("email")}
                 type="email"
                 placeholder="Masukkan email Anda"
@@ -130,9 +143,10 @@ export function LoginForm() {
             <div style={{ position: "relative" }}>
               <Lock size={16} color="var(--fendm-text-muted)" style={{
                 position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)",
-                pointerEvents: "none", opacity: 0.7
+                pointerEvents: "none", opacity: 0.7,
               }} />
               <input
+                id="password"
                 {...register("password")}
                 type={showPw ? "text" : "password"}
                 placeholder="Masukkan password Anda"
@@ -144,8 +158,9 @@ export function LoginForm() {
                 onClick={() => setShowPw(v => !v)}
                 style={{
                   position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)",
-                  background: "none", border: "none", cursor: "pointer", color: "var(--fendm-text-muted)", padding: 0,
-                  display: "flex", alignItems: "center", opacity: 0.7
+                  background: "none", border: "none", cursor: "pointer",
+                  color: "var(--fendm-text-muted)", padding: 0,
+                  display: "flex", alignItems: "center", opacity: 0.7,
                 }}
               >
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -156,9 +171,21 @@ export function LoginForm() {
             )}
           </div>
 
+          {/* Error state */}
+          {error && (
+            <div style={{ background: "#FFEBEE", color: "#C62828", fontSize: 12, padding: "8px 12px", borderRadius: 7 }}>
+              {error}
+            </div>
+          )}
+
           {/* Submit */}
-          <button type="submit" disabled={loading} className="submit-btn" style={{ marginTop: "8px", background: "var(--fendm-primary)" }}>
-            {loading ? (
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="submit-btn"
+            style={{ marginTop: "8px" }}
+          >
+            {isSubmitting ? (
               <>
                 <svg style={{ animation: "spin 0.8s linear infinite" }} width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" />
@@ -182,10 +209,7 @@ export function LoginForm() {
       </div>
 
       {/* Bottom footer */}
-      <div style={{
-        position: "relative", zIndex: 1, textAlign: "center",
-        marginTop: "32px",
-      }}>
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", marginTop: "32px" }}>
         <p style={{ color: "var(--fendm-text-muted)", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", fontWeight: 500 }}>
           <ShieldCheck size={14} color="var(--fendm-text-muted)" />
           Secure &nbsp;•&nbsp; Private &nbsp;•&nbsp; Internal Use Only

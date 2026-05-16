@@ -1,5 +1,4 @@
 import { NavLink, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
 import { useSidebarStore } from '../../store/useSidebarStore'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { useAuthStore } from '../../store/useAuthStore'
@@ -114,13 +113,13 @@ const SidebarContent = ({ collapsed, onClose }: SidebarContentProps) => {
                     alignItems: 'center', gap: 10,
                     padding: collapsed ? '10px 0' : '9px 20px',
                     justifyContent: collapsed ? 'center' : 'flex-start',
-                    margin: collapsed ? '2px 8px' : isActive ? '2px 0 2px 8px' : '2px 8px',
-                    borderRadius: collapsed ? 8 : isActive ? '8px 0 0 8px' : 8,
+                    margin: '2px 8px',
+                    borderRadius: 8,
                     color: isActive ? 'var(--fendm-primary)' : 'var(--sidebar-muted)',
                     background: isActive ? 'var(--content-bg)' : 'transparent',
                     fontWeight: isActive ? 600 : 400,
                     fontSize: 13, whiteSpace: 'nowrap',
-                    transition: 'background 0.18s, color 0.18s, margin 0.2s, border-radius 0.2s',
+                    transition: 'background 0.18s, color 0.18s',
                   }}
                   onMouseOver={e => {
                     if (!isActive) {
@@ -135,18 +134,9 @@ const SidebarContent = ({ collapsed, onClose }: SidebarContentProps) => {
                     }
                   }}
                 >
-                  {/* ── Animated icon only ── */}
-                  <motion.span
-                    animate={isActive
-                      ? { scale: 1.18, rotate: 0 }
-                      : { scale: 1,    rotate: 0 }
-                    }
-                    whileHover={{ scale: 1.22 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                    style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
-                  >
+                  <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
                     {item.icon}
-                  </motion.span>
+                  </span>
 
                   {!collapsed && <span>{item.label}</span>}
                 </NavLink>
