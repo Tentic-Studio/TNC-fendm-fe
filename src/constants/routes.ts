@@ -9,6 +9,7 @@ export const ROUTES = {
   UNITS: '/settings/units',
   CATEGORIES: '/settings/categories',
   USERS: '/admin/users',
+  TENANT: '/admin/tenant',
   PROFILE: '/profile',
   CHANGE_PASSWORD: '/profile/change-password',
   DOCS: '/docs',

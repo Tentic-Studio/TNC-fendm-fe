@@ -3,7 +3,7 @@ import { useSidebarStore } from '../../store/useSidebarStore'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { useAuthStore } from '../../store/useAuthStore'
 import { ROUTES } from '../../constants/routes'
-import { LayoutDashboard, ShoppingCart, Package, Archive, Factory, Banknote, Grid, Tags, Users, BookOpen } from 'lucide-react'
+import { LayoutDashboard, ShoppingCart, Package, Archive, Factory, Banknote, Grid, Tags, Users, BookOpen, Store } from 'lucide-react'
 import logo from '../../assets/logo_fandm.png'
 
 interface SidebarContentProps {
@@ -16,20 +16,20 @@ const menuGroups = [
     label: 'Main Menu',
     permission: 'all',
     children: [
-      { label: 'Dashboard',       path: ROUTES.DASHBOARD,   permission: 'all',   icon: <LayoutDashboard size={16} strokeWidth={1.5} /> },
-      { label: 'Order',           path: ROUTES.ORDERS,      permission: 'all',   icon: <ShoppingCart    size={16} strokeWidth={1.5} /> },
-      { label: 'Stok Bahan Baku', path: ROUTES.INGREDIENTS, permission: 'all',   icon: <Package         size={16} strokeWidth={1.5} /> },
-      { label: 'Produk & Resep',  path: ROUTES.PRODUCTS,    permission: 'all',   icon: <Archive         size={16} strokeWidth={1.5} /> },
-      { label: 'Produksi',        path: ROUTES.PRODUCTIONS, permission: 'all',   icon: <Factory         size={16} strokeWidth={1.5} /> },
-      { label: 'Keuangan',        path: ROUTES.CASH_FLOW,   permission: 'all',   icon: <Banknote        size={16} strokeWidth={1.5} /> },
+      { label: 'Dashboard', path: ROUTES.DASHBOARD, permission: 'all', icon: <LayoutDashboard size={16} strokeWidth={1.5} /> },
+      { label: 'Order', path: ROUTES.ORDERS, permission: 'all', icon: <ShoppingCart size={16} strokeWidth={1.5} /> },
+      { label: 'Stok Bahan Baku', path: ROUTES.INGREDIENTS, permission: 'all', icon: <Package size={16} strokeWidth={1.5} /> },
+      { label: 'Produk & Resep', path: ROUTES.PRODUCTS, permission: 'all', icon: <Archive size={16} strokeWidth={1.5} /> },
+      { label: 'Produksi', path: ROUTES.PRODUCTIONS, permission: 'all', icon: <Factory size={16} strokeWidth={1.5} /> },
+      { label: 'Keuangan', path: ROUTES.CASH_FLOW, permission: 'all', icon: <Banknote size={16} strokeWidth={1.5} /> },
     ],
   },
   {
     label: 'Settings',
     permission: 'all',
     children: [
-      { label: 'Units',   path: ROUTES.UNITS,       permission: 'all',   icon: <Grid size={16} strokeWidth={1.5} /> },
-      { label: 'Kategori',path: ROUTES.CATEGORIES,  permission: 'all',   icon: <Tags size={16} strokeWidth={1.5} /> },
+      { label: 'Units', path: ROUTES.UNITS, permission: 'all', icon: <Grid size={16} strokeWidth={1.5} /> },
+      { label: 'Kategori', path: ROUTES.CATEGORIES, permission: 'all', icon: <Tags size={16} strokeWidth={1.5} /> },
     ],
   },
   {
@@ -37,13 +37,7 @@ const menuGroups = [
     permission: 'admin',
     children: [
       { label: 'User Management', path: ROUTES.USERS, permission: 'admin', icon: <Users size={16} strokeWidth={1.5} /> },
-    ],
-  },
-  {
-    label: 'Guide',
-    permission: 'all',
-    children: [
-      { label: 'Dokumentasi', path: ROUTES.DOCS, permission: 'all', icon: <BookOpen size={16} strokeWidth={1.5} /> },
+      { label: 'Tenant Management', path: ROUTES.TENANT, permission: 'admin', icon: <Store size={16} strokeWidth={1.5} /> },
     ],
   },
 ]
@@ -147,13 +141,50 @@ const SidebarContent = ({ collapsed, onClose }: SidebarContentProps) => {
       </nav>
 
       {/* ── Footer ─────────────────────────────────────────────────────── */}
-      <div style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: 8 }}>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4CAF50', flexShrink: 0 }} />
-        {!collapsed && (
-          <span style={{ fontSize: 10, color: 'var(--sidebar-muted)', fontWeight: 500, letterSpacing: 0.5 }}>
-            FANDM v1.0.0
+      <div style={{ display: 'flex', flexDirection: 'column', marginTop: 'auto' }}>
+        <NavLink
+          to={ROUTES.DOCS}
+          onClick={onClose}
+          style={{
+            display: 'flex', textDecoration: 'none',
+            alignItems: 'center', gap: 10,
+            padding: collapsed ? '10px 0' : '9px 20px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
+            margin: '0 8px 8px 8px',
+            borderRadius: 8,
+            color: location.pathname.startsWith(ROUTES.DOCS) ? 'var(--fendm-primary)' : 'var(--sidebar-muted)',
+            background: location.pathname.startsWith(ROUTES.DOCS) ? 'var(--content-bg)' : 'transparent',
+            fontWeight: location.pathname.startsWith(ROUTES.DOCS) ? 600 : 400,
+            fontSize: 13, whiteSpace: 'nowrap',
+            transition: 'background 0.18s, color 0.18s',
+          }}
+          onMouseOver={e => {
+            if (!location.pathname.startsWith(ROUTES.DOCS)) {
+              e.currentTarget.style.background = '#5D7D94'
+              e.currentTarget.style.color = '#ffffff'
+            }
+          }}
+          onMouseOut={e => {
+            if (!location.pathname.startsWith(ROUTES.DOCS)) {
+              e.currentTarget.style.background = 'transparent'
+              e.currentTarget.style.color = 'var(--sidebar-muted)'
+            }
+          }}
+        >
+          <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+            <BookOpen size={16} strokeWidth={1.5} />
           </span>
-        )}
+          {!collapsed && <span>Dokumentasi</span>}
+        </NavLink>
+
+        <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: 8 }}>
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4CAF50', flexShrink: 0 }} />
+          {!collapsed && (
+            <span style={{ fontSize: 10, color: 'var(--sidebar-muted)', fontWeight: 500, letterSpacing: 0.5 }}>
+              FANDM v1.0.0
+            </span>
+          )}
+        </div>
       </div>
     </>
   )
