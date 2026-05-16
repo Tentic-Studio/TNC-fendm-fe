@@ -11,7 +11,7 @@ const features = [
 export function AuthBanner() {
   return (
     <div className="left-panel" style={{
-      width: "42%", minHeight: "100vh",
+      width: "30%", minHeight: "100vh",
       background: "var(--fendm-primary-gradient)",
       display: "flex", flexDirection: "column",
       justifyContent: "space-between", padding: "50px 60px",

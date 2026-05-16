@@ -7,6 +7,9 @@ import { Eye, EyeOff, Lock, Mail, ShieldCheck } from "lucide-react"
 import logo from "@/assets/logo_fandm.png"
 import { useAuthStore } from "@/store/useAuthStore"
 import { ROUTES } from "@/constants/routes"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import { KitchenWatermark } from "./AuthDecorations"
 
 // ─── Validation Schema ────────────────────────────────────────────────────────
@@ -31,7 +34,7 @@ export function LoginForm() {
   // TODO: Ganti dengan API call ke backend saat sudah ready
   const onSubmit = async (_values: LoginFormValues) => {
     setError("")
-    await new Promise(r => setTimeout(r, 800)) // simulate loading
+    await new Promise(r => setTimeout(r, 800))
     setAuth("dummy-token-fendm", {
       id: "1",
       name: "Admin FANDM",
@@ -46,17 +49,15 @@ export function LoginForm() {
     <div className="right-panel" style={{
       flex: 1, display: "flex", flexDirection: "column",
       alignItems: "center", justifyContent: "center",
-      background: "var(--fendm-bg-light)", position: "relative", overflow: "hidden", padding: "40px 24px",
+      background: "var(--fendm-bg-light)",
+      position: "relative", overflow: "hidden",
+      padding: "40px 24px",
     }}>
-      {/* Kitchen watermark */}
-      <div style={{
-        position: "absolute", right: 0, bottom: 0,
-        width: "380px", height: "460px", pointerEvents: "none", opacity: 0.8,
-      }}>
+
+      {/* ── Decorations ── */}
+      <div style={{ position: "absolute", right: 0, bottom: 0, width: "380px", height: "460px", pointerEvents: "none", opacity: 0.8 }}>
         <KitchenWatermark />
       </div>
-
-      {/* Subtle circle top-right */}
       <div style={{
         position: "absolute", top: "-100px", right: "-100px",
         width: "350px", height: "350px", borderRadius: "50%",
@@ -64,38 +65,37 @@ export function LoginForm() {
         pointerEvents: "none",
       }} />
 
-      {/* Mobile logo */}
-      <div className="mobile-logo" style={{
-        display: "none", alignItems: "center", gap: "10px", marginBottom: "28px",
-      }}>
+      {/* ── Mobile logo ── */}
+      <div className="mobile-logo" style={{ display: "none", alignItems: "center", gap: "10px", marginBottom: "28px" }}>
         <img src={logo} alt="FANDM" style={{ height: "28px" }} />
         <span style={{ color: "var(--fendm-text-dark)", fontWeight: 700, fontSize: "18px", letterSpacing: "0.1em" }}>FANDM</span>
       </div>
 
-      {/* Card */}
+      {/* ── Card ── */}
       <div style={{
         position: "relative", zIndex: 1,
-        width: "100%", maxWidth: "440px",
+        width: "100%", maxWidth: "520px",
         background: "white", borderRadius: "12px",
         padding: "48px 44px",
-        boxShadow: "0 10px 40px rgba(0,0,0,0.04)",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.06)",
       }}>
+
         {/* Lock icon */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "24px" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
           <div style={{
-            width: "56px", height: "56px", borderRadius: "50%",
+            width: "52px", height: "52px", borderRadius: "50%",
             background: "white", border: "1px solid var(--fendm-border)",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}>
-            <Lock size={22} color="var(--fendm-text-dark)" strokeWidth={1.5} />
+            <Lock size={20} color="var(--fendm-text-dark)" strokeWidth={1.5} />
           </div>
         </div>
 
         {/* Title */}
-        <div style={{ textAlign: "center", marginBottom: "36px" }}>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
           <h2 style={{
-            color: "var(--fendm-text-dark)", fontSize: "24px", fontWeight: 600,
-            margin: "0 0 12px", fontFamily: "var(--serif)",
+            color: "var(--fendm-text-dark)", fontSize: "22px", fontWeight: 700,
+            margin: "0 0 10px", fontFamily: "var(--serif)",
           }}>
             Selamat Datang Kembali
           </h2>
@@ -103,118 +103,138 @@ export function LoginForm() {
             Akses terbatas untuk mitra terdaftar.<br />
             Gunakan akun yang telah diberikan oleh tim kami.
           </p>
-          <div style={{
-            width: "28px", height: "2px",
-            background: "var(--fendm-accent)", borderRadius: "2px", margin: "16px auto 0",
-          }} />
+          <div style={{ width: "28px", height: "2px", background: "var(--fendm-accent)", borderRadius: "2px", margin: "14px auto 0" }} />
         </div>
 
-        {/* Form */}
+        {/* ── Form ── */}
         <form onSubmit={handleSubmit(onSubmit)} style={{ display: "flex", flexDirection: "column", gap: "20px", textAlign: "left" }}>
 
           {/* Email */}
-          <div>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--fendm-text-dark)", marginBottom: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <Label htmlFor="email" style={{ fontSize: "13px", fontWeight: 700, color: "var(--fendm-text-dark)" }}>
               Email
-            </label>
+            </Label>
             <div style={{ position: "relative" }}>
-              <Mail size={16} color="var(--fendm-text-muted)" style={{
-                position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)",
-                pointerEvents: "none", opacity: 0.7,
-              }} />
-              <input
+              <Mail
+                size={14}
+                style={{
+                  position: "absolute", left: "14px", top: "50%",
+                  transform: "translateY(-50%)", pointerEvents: "none",
+                  color: "var(--fendm-text-muted)", opacity: 0.6,
+                }}
+              />
+              <Input
                 id="email"
                 {...register("email")}
                 type="email"
                 placeholder="Masukkan email Anda"
-                className={`login-input${errors.email ? " error" : ""}`}
+                aria-invalid={!!errors.email}
+                style={{
+                  paddingLeft: "40px", height: "46px",
+                  fontSize: "14px", fontFamily: "inherit",
+                  color: "var(--fendm-text-dark)",
+                }}
               />
             </div>
             {errors.email && (
-              <p style={{ color: "#ef4444", fontSize: "11px", marginTop: "6px" }}>{errors.email.message}</p>
+              <p style={{ fontSize: "11px", color: "#ef4444", margin: 0 }}>{errors.email.message}</p>
             )}
           </div>
 
           {/* Password */}
-          <div>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: 700, color: "var(--fendm-text-dark)", marginBottom: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+            <Label htmlFor="password" style={{ fontSize: "13px", fontWeight: 700, color: "var(--fendm-text-dark)" }}>
               Password
-            </label>
+            </Label>
             <div style={{ position: "relative" }}>
-              <Lock size={16} color="var(--fendm-text-muted)" style={{
-                position: "absolute", left: "14px", top: "50%", transform: "translateY(-50%)",
-                pointerEvents: "none", opacity: 0.7,
-              }} />
-              <input
+              <Lock
+                size={14}
+                style={{
+                  position: "absolute", left: "14px", top: "50%",
+                  transform: "translateY(-50%)", pointerEvents: "none",
+                  color: "var(--fendm-text-muted)", opacity: 0.6,
+                }}
+              />
+              <Input
                 id="password"
                 {...register("password")}
                 type={showPw ? "text" : "password"}
                 placeholder="Masukkan password Anda"
-                className={`login-input${errors.password ? " error" : ""}`}
-                style={{ paddingRight: "42px" }}
+                aria-invalid={!!errors.password}
+                style={{
+                  paddingLeft: "40px", paddingRight: "42px", height: "46px",
+                  fontSize: "14px", fontFamily: "inherit",
+                  color: "var(--fendm-text-dark)",
+                }}
               />
               <button
                 type="button"
                 onClick={() => setShowPw(v => !v)}
                 style={{
-                  position: "absolute", right: "14px", top: "50%", transform: "translateY(-50%)",
+                  position: "absolute", right: "14px", top: "50%",
+                  transform: "translateY(-50%)",
                   background: "none", border: "none", cursor: "pointer",
                   color: "var(--fendm-text-muted)", padding: 0,
-                  display: "flex", alignItems: "center", opacity: 0.7,
+                  display: "flex", alignItems: "center", opacity: 0.6,
                 }}
               >
-                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
               </button>
             </div>
             {errors.password && (
-              <p style={{ color: "#ef4444", fontSize: "11px", marginTop: "6px" }}>{errors.password.message}</p>
+              <p style={{ fontSize: "11px", color: "#ef4444", margin: 0 }}>{errors.password.message}</p>
             )}
           </div>
 
           {/* Error state */}
           {error && (
-            <div style={{ background: "#FFEBEE", color: "#C62828", fontSize: 12, padding: "8px 12px", borderRadius: 7 }}>
+            <div style={{ background: "#FFEBEE", color: "#C62828", fontSize: "12px", padding: "8px 12px", borderRadius: "8px" }}>
               {error}
             </div>
           )}
 
           {/* Submit */}
-          <button
+          <Button
             type="submit"
             disabled={isSubmitting}
-            className="submit-btn"
-            style={{ marginTop: "8px" }}
+            style={{
+              height: "46px", width: "100%",
+              background: isSubmitting ? "var(--fendm-primary-dark)" : "var(--fendm-primary)",
+              fontSize: "14px", fontWeight: 600, letterSpacing: "0.3px",
+              marginTop: "4px", transition: "background-color 0.2s",
+            }}
           >
             {isSubmitting ? (
               <>
-                <svg style={{ animation: "spin 0.8s linear infinite" }} width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <svg className="animate-spin" style={{ marginRight: "8px" }} width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)" strokeWidth="3" />
                   <path d="M12 2a10 10 0 0 1 10 10" stroke="white" strokeWidth="3" strokeLinecap="round" />
                 </svg>
                 Memproses...
               </>
             ) : "→ Masuk"}
-          </button>
+          </Button>
         </form>
 
-        {/* Note */}
-        <div style={{
-          display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", marginTop: "24px",
-        }}>
-          <Lock size={12} color="var(--fendm-text-muted)" style={{ flexShrink: 0, opacity: 0.8 }} />
-          <p style={{ color: "var(--fendm-text-muted)", fontSize: "11px", opacity: 0.8 }}>
+        {/* Note below button */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "6px", marginTop: "20px" }}>
+          <Lock size={11} style={{ color: "var(--fendm-text-muted)", opacity: 0.6, flexShrink: 0 }} />
+          <p style={{ fontSize: "12px", color: "var(--fendm-text-muted)", opacity: 0.7, margin: 0 }}>
             Sistem ini hanya dapat diakses oleh pengguna yang diundang.
           </p>
         </div>
       </div>
 
-      {/* Bottom footer */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", marginTop: "32px" }}>
-        <p style={{ color: "var(--fendm-text-muted)", fontSize: "12px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", fontWeight: 500 }}>
-          <ShieldCheck size={14} color="var(--fendm-text-muted)" />
-          Secure &nbsp;•&nbsp; Private &nbsp;•&nbsp; Internal Use Only
+      {/* ── Footer (outside card) ── */}
+      <div style={{ position: "relative", zIndex: 1, textAlign: "center", marginTop: "28px" }}>
+        <p style={{
+          display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+          fontSize: "12px", fontWeight: 500, color: "var(--fendm-text-muted)", margin: 0,
+        }}>
+          <ShieldCheck size={13} style={{ color: "var(--fendm-text-muted)", flexShrink: 0 }} />
+          <span>Secure &nbsp;•&nbsp; Private &nbsp;•&nbsp; Internal Use Only</span>
         </p>
-        <p style={{ color: "var(--fendm-text-muted)", fontSize: "11px", marginTop: "8px", opacity: 0.7 }}>
+        <p style={{ fontSize: "11px", color: "var(--fendm-text-muted)", opacity: 0.6, marginTop: "6px" }}>
           © 2026 Tentic Studio. All rights reserved.
         </p>
       </div>
