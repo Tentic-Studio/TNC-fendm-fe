@@ -43,7 +43,7 @@ export function AuthBanner() {
       }} />
 
       <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", gap: "12px" }}>
-        <img src={logo} alt="FANDM" style={{ height: "28px", objectFit: "contain" }} />
+        <img src={logo} alt="FANDM" style={{ height: "28px", objectFit: "contain", filter: "brightness(0) invert(1)" }} />
         <span style={{ color: "white", fontWeight: 700, fontSize: "16px", letterSpacing: "0.1em" }}>FANDM</span>
       </div>
 
