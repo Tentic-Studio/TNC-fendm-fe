@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/useAuthStore'
 import { ROUTES } from '../../constants/routes'
 import { useState, useRef, useEffect } from 'react'
 import { User, KeyRound, LogOut, ChevronDown } from 'lucide-react'
+import { authService } from '@/services/auth.service'
 
 interface TopbarProps {
   breadcrumb: string[]
@@ -29,9 +30,15 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const handleLogout = () => {
-    clearAuth()
-    navigate(ROUTES.LOGIN)
+  const handleLogout = async () => {
+    try {
+      await authService.logout()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      clearAuth()
+      navigate(ROUTES.LOGIN)
+    }
   }
 
   return (

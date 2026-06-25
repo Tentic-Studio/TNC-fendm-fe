@@ -11,6 +11,8 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { KitchenWatermark } from "./AuthDecorations"
+import { authService } from "@/services/auth.service"
+import type { ApiErrorResponse, LoginResponse } from "@/types/auth"
 
 // ─── Validation Schema ────────────────────────────────────────────────────────
 const loginSchema = z.object({
@@ -34,15 +36,18 @@ export function LoginForm() {
   // TODO: Ganti dengan API call ke backend saat sudah ready
   const onSubmit = async (_values: LoginFormValues) => {
     setError("")
-    await new Promise(r => setTimeout(r, 800))
-    setAuth("dummy-token-fendm", {
-      id: "1",
-      name: "Admin FANDM",
-      email: _values.email,
-      role: "admin",
-      tenant: "Tentic Studio HQ",
-    })
-    navigate(ROUTES.DASHBOARD)
+    try {
+      const response: LoginResponse = await authService.login(_values);
+      // Simpan data user dan token
+      setAuth(response.data.accessToken, response.data.user, response.data.mustChangePassword, response.data.tenant);
+      navigate(ROUTES.DASHBOARD);
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        setError(error.response.data.message)
+      } else if (error.message) {
+        setError(error.message)
+      }
+    }
   }
 
   return (
