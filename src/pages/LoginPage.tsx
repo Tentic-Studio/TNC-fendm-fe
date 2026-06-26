@@ -1,8 +1,5 @@
-import { Navigate } from 'react-router-dom'
-import { useAuthStore } from '@/store/useAuthStore'
-import { ROUTES } from '@/constants/routes'
-import { AuthBanner } from '@/components/auth/AuthBanner'
-import { LoginForm } from '@/components/auth/LoginForm'
+import AuthBanner from '@/components/auth/AuthBanner'
+import FormLoginComponent from '@/components/auth/LoginFormComponent'
 
 // ─── Global styles (layout responsif — dibutuhkan AuthBanner & LoginForm) ─────
 const loginPageStyles = `
@@ -17,21 +14,14 @@ const loginPageStyles = `
 `
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
-export default function LoginPage() {
-  const { accessToken } = useAuthStore()
-
-  if (accessToken) {
-    return <Navigate to={ROUTES.DASHBOARD} replace />
-  }
-
+function LoginPage() {
   return (
-    <>
-      <style>{loginPageStyles}</style>
-
-      <div style={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
-        <AuthBanner />
-        <LoginForm />
-      </div>
-    </>
+    <div className="min-h-screen w-full flex">
+      <AuthBanner className="hidden lg:flex w-[38%] min-h-screen" />
+      <FormLoginComponent />
+    </div>
   )
 }
+
+
+export default LoginPage;

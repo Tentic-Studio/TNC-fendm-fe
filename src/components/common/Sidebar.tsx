@@ -1,256 +1,236 @@
-import { NavLink, useLocation } from 'react-router-dom'
-import { useSidebarStore } from '../../store/useSidebarStore'
-import { useBreakpoint } from '../../hooks/useBreakpoint'
-import { useAuthStore } from '../../store/useAuthStore'
-import { ROUTES } from '../../constants/routes'
-import { LayoutDashboard, ShoppingCart, Package, Archive, Factory, Banknote, Grid, Tags, Users, BookOpen, Store } from 'lucide-react'
-import logo from '../../assets/logo_fandm.png'
+import { MENUS } from "@/constants/menu";
+import { ROUTES } from "@/constants/routes";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { cn } from "@/lib/utils";
+import { useSidebarStore } from "@/store/useSidebarStore";
+import { BookOpen, ChevronLeft, ChevronRight } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
+import BannerBackground from "./BannerBackground";
+import logo from "@/assets/logo_fandm.png";
+import { useAuthStore } from "@/store/useAuthStore";
 
-interface SidebarContentProps {
-  collapsed: boolean
-  onClose?: () => void
+function NavItem({
+  path,
+  label,
+  icon: Icon,
+  exact = false,
+  collapsed,
+  onClose,
+}: {
+  path: string;
+  label: string;
+  icon: React.ElementType;
+  exact?: boolean;
+  collapsed: boolean;
+  onClose?: () => void;
+}) {
+  const location = useLocation();
+  const isActive = exact
+    ? location.pathname === path
+    : location.pathname.startsWith(path);
+
+  return (
+    <NavLink
+      to={path}
+      end={exact}
+      onClick={onClose}
+      title={collapsed ? label : undefined}
+      className={cn(
+        "flex items-center gap-2.5 mx-1.5 my-0.5 rounded-lg text-[13px] transition-all duration-150 no-underline group",
+        collapsed ? "py-2.5 justify-center px-2" : "py-2 px-3.5",
+        isActive
+          ? "bg-white text-[var(--fandm-text)] font-medium"
+          : "text-white/50 hover:bg-white/[0.07] hover:text-white/85",
+      )}
+    >
+      <Icon size={15} strokeWidth={1.5} className="shrink-0" />
+      {!collapsed && <span className="truncate">{label}</span>}
+    </NavLink>
+  );
 }
 
-const menuGroups = [
-  {
-    label: 'Main Menu',
-    permission: 'all',
-    children: [
-      { label: 'Dashboard', path: ROUTES.DASHBOARD, permission: 'all', icon: <LayoutDashboard size={16} strokeWidth={1.5} /> },
-      { label: 'Order', path: ROUTES.ORDERS, permission: 'all', icon: <ShoppingCart size={16} strokeWidth={1.5} /> },
-      { label: 'Stok Bahan Baku', path: ROUTES.INGREDIENTS, permission: 'all', icon: <Package size={16} strokeWidth={1.5} /> },
-      { label: 'Produk & Resep', path: ROUTES.PRODUCTS, permission: 'all', icon: <Archive size={16} strokeWidth={1.5} /> },
-      { label: 'Produksi', path: ROUTES.PRODUCTIONS, permission: 'all', icon: <Factory size={16} strokeWidth={1.5} /> },
-      { label: 'Keuangan', path: ROUTES.CASH_FLOW, permission: 'all', icon: <Banknote size={16} strokeWidth={1.5} /> },
-    ],
-  },
-  {
-    label: 'Settings',
-    permission: 'all',
-    children: [
-      { label: 'Units', path: ROUTES.UNITS, permission: 'all', icon: <Grid size={16} strokeWidth={1.5} /> },
-      { label: 'Kategori', path: ROUTES.CATEGORIES, permission: 'all', icon: <Tags size={16} strokeWidth={1.5} /> },
-    ],
-  },
-  {
-    label: 'Administrator',
-    permission: 'admin',
-    children: [
-      { label: 'User Management', path: ROUTES.USERS, permission: 'admin', icon: <Users size={16} strokeWidth={1.5} /> },
-      { label: 'Tenant Management', path: ROUTES.TENANT, permission: 'admin', icon: <Store size={16} strokeWidth={1.5} /> },
-    ],
-  },
-]
-
 // ─── Sidebar Content ──────────────────────────────────────────────────────────
-const SidebarContent = ({ collapsed, onClose }: SidebarContentProps) => {
-  const { user } = useAuthStore()
-  const location = useLocation()
-  const role = user?.role ?? 'all'
+function SidebarContent({
+  collapsed,
+  onClose,
+}: {
+  collapsed: boolean;
+  onClose?: () => void;
+}) {
+  const { user } = useAuthStore();
+  const role = user?.role ?? "all";
+  const initials =
+    user?.name
+      ?.split(" ")
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase() ?? "U";
 
-  const filteredMenu = menuGroups
-    .filter(g => g.permission === 'all' || g.permission === role)
-    .map(g => ({
-      ...g,
-      children: g.children.filter(i => i.permission === 'all' || i.permission === role),
-    }))
+  const filtered = MENUS.map((group) => {
+    const items = group.items.filter((item) => {
+      if (item.path === ROUTES.TENANT) {
+        return role === "superadmin";
+      }
+      if (item.path === ROUTES.USERS) {
+        return role === "superadmin" || role === "owner";
+      }
+      return true;
+    });
+    return { ...group, items };
+  }).filter((group) => group.items.length > 0);
 
   return (
     <>
-      {/* ── Logo ───────────────────────────────────────────────────────── */}
-      <div style={{
-        height: 'var(--topbar-height)',
-        display: 'flex', alignItems: 'center',
-        padding: collapsed ? '0 12px' : '0 20px',
-        gap: 10, flexShrink: 0, overflow: 'hidden',
-      }}>
-        <img
-          src={logo} alt="FANDM"
-          style={{ height: 28, objectFit: 'contain', flexShrink: 0 }}
-        />
+      {/* Logo */}
+      <div
+        className={cn(
+          "h-14 flex items-center shrink-0 gap-2.5 border-b border-white/[0.06]",
+          collapsed ? "px-3 justify-center" : "px-5",
+        )}
+      >
+        <img src={logo} alt="FANDM" className="h-7 object-contain shrink-0" />
         {!collapsed && (
-          <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--sidebar-text)', letterSpacing: '0.5px', whiteSpace: 'nowrap' }}>
-            FANDM
+          <span className="text-white font-semibold text-sm tracking-widest whitespace-nowrap">
+            SOOM
           </span>
         )}
       </div>
 
-      {/* ── Navigation ─────────────────────────────────────────────────── */}
-      <nav style={{ flex: 1, padding: '8px 0', overflowY: 'auto', overflowX: 'hidden', margin: 0 }}>
-        {filteredMenu.map((group, index) => (
+      {/* Nav */}
+      <nav className="flex-1 py-2 overflow-y-auto overflow-x-hidden">
+        {filtered.map((group, i) => (
           <div key={group.label}>
-            {index > 0 && <div style={{ height: 8 }} />}
+            {i > 0 && <div className="h-1" />}
 
             {!collapsed && (
-              <div style={{
-                fontSize: 10, fontWeight: 600, color: 'var(--sidebar-muted)',
-                textTransform: 'uppercase', letterSpacing: '0.8px',
-                padding: '8px 20px 4px',
-              }}>
+              <p className="text-[9px] font-semibold uppercase tracking-widest text-white/30 px-5 pt-3 pb-1">
                 {group.label}
-              </div>
+              </p>
             )}
 
-            {group.children.map(item => {
-              const isActive = item.path === '/'
-                ? location.pathname === '/'
-                : location.pathname.startsWith(item.path)
-
-              return (
-                <NavLink
-                  key={item.path}
-                  to={item.path}
-                  end={item.path === '/'}
-                  onClick={onClose}
-                  style={{
-                    display: 'flex', textDecoration: 'none',
-                    alignItems: 'center', gap: 10,
-                    padding: collapsed ? '10px 0' : '9px 20px',
-                    justifyContent: collapsed ? 'center' : 'flex-start',
-                    margin: '2px 8px',
-                    borderRadius: 8,
-                    color: isActive ? 'var(--fendm-primary)' : 'var(--sidebar-muted)',
-                    background: isActive ? 'var(--content-bg)' : 'transparent',
-                    fontWeight: isActive ? 600 : 400,
-                    fontSize: 13, whiteSpace: 'nowrap',
-                    transition: 'background 0.18s, color 0.18s',
-                  }}
-                  onMouseOver={e => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = '#5D7D94'
-                      e.currentTarget.style.color = '#ffffff'
-                    }
-                  }}
-                  onMouseOut={e => {
-                    if (!isActive) {
-                      e.currentTarget.style.background = 'transparent'
-                      e.currentTarget.style.color = 'var(--sidebar-muted)'
-                    }
-                  }}
-                >
-                  <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-                    {item.icon}
-                  </span>
-
-                  {!collapsed && <span>{item.label}</span>}
-                </NavLink>
-              )
-            })}
+            {group.items.map((item) => (
+              <NavItem
+                key={item.path}
+                {...item}
+                collapsed={collapsed}
+                onClose={onClose}
+              />
+            ))}
           </div>
         ))}
       </nav>
 
-      {/* ── Footer ─────────────────────────────────────────────────────── */}
-      <div style={{ display: 'flex', flexDirection: 'column', marginTop: 'auto' }}>
-        <NavLink
-          to={ROUTES.DOCS}
-          onClick={onClose}
-          style={{
-            display: 'flex', textDecoration: 'none',
-            alignItems: 'center', gap: 10,
-            padding: collapsed ? '10px 0' : '9px 20px',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            margin: '0 8px 8px 8px',
-            borderRadius: 8,
-            color: location.pathname.startsWith(ROUTES.DOCS) ? 'var(--fendm-primary)' : 'var(--sidebar-muted)',
-            background: location.pathname.startsWith(ROUTES.DOCS) ? 'var(--content-bg)' : 'transparent',
-            fontWeight: location.pathname.startsWith(ROUTES.DOCS) ? 600 : 400,
-            fontSize: 13, whiteSpace: 'nowrap',
-            transition: 'background 0.18s, color 0.18s',
-          }}
-          onMouseOver={e => {
-            if (!location.pathname.startsWith(ROUTES.DOCS)) {
-              e.currentTarget.style.background = '#5D7D94'
-              e.currentTarget.style.color = '#ffffff'
-            }
-          }}
-          onMouseOut={e => {
-            if (!location.pathname.startsWith(ROUTES.DOCS)) {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.color = 'var(--sidebar-muted)'
-            }
-          }}
-        >
-          <span style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}>
-            <BookOpen size={16} strokeWidth={1.5} />
-          </span>
-          {!collapsed && <span>Dokumentasi</span>}
-        </NavLink>
+      {/* Docs link */}
+      <div className="px-1.5 pb-1">
+        <NavItem
+          path={ROUTES.DOCS}
+          label="Dokumentasi"
+          icon={BookOpen}
+          collapsed={collapsed}
+          onClose={onClose}
+        />
+      </div>
 
-        <div style={{ padding: '12px 20px', borderTop: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start', gap: 8 }}>
-          <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#4CAF50', flexShrink: 0 }} />
-          {!collapsed && (
-            <span style={{ fontSize: 10, color: 'var(--sidebar-muted)', fontWeight: 500, letterSpacing: 0.5 }}>
-              FANDM v1.0.0
-            </span>
-          )}
+      {/* User footer */}
+      <div
+        className={cn(
+          "border-t border-white/[0.06] py-3 flex items-center gap-2.5",
+          collapsed ? "px-3 justify-center" : "px-4",
+        )}
+      >
+        {/* Avatar */}
+        <div className="w-7 h-7 rounded-full bg-[#d2ac79] flex items-center justify-center shrink-0">
+          <span className="text-white text-[10px] font-semibold">
+            {initials}
+          </span>
         </div>
+
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className="text-white text-xs font-medium truncate leading-tight">
+              {user?.name ?? "Admin"}
+            </p>
+            <p className="text-white/40 text-[10px] truncate">{user?.email}</p>
+          </div>
+        )}
       </div>
     </>
-  )
+  );
 }
 
 // ─── Sidebar Shell ────────────────────────────────────────────────────────────
 export default function Sidebar() {
-  const { collapsed, toggle } = useSidebarStore()
-  const { isMobile } = useBreakpoint()
+  const { collapsed, toggle, setCollapsed } = useSidebarStore();
+  const { isMobile } = useBreakpoint();
 
+  // ── Mobile: overlay drawer ─────────────────────────────────────────────────
   if (isMobile) {
+    const closeSidebar = () => setCollapsed(true);
+
     return (
       <>
+        {/* Overlay backdrop */}
         {!collapsed && (
           <div
-            onClick={toggle}
-            style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 100 }}
+            onClick={closeSidebar}
+            className="fixed inset-0 bg-black/45 z-[100]"
+            aria-hidden="true"
           />
         )}
-        <aside style={{
-          width: 'var(--sidebar-width)', background: 'var(--sidebar-bg)',
-          display: 'flex', flexDirection: 'column',
-          transition: 'transform 0.22s ease',
-          transform: collapsed ? 'translateX(-100%)' : 'translateX(0)',
-          height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 101,
-        }}>
-          <SidebarContent collapsed={false} onClose={toggle} />
+
+        <aside
+          aria-label="Sidebar navigasi"
+          className={cn(
+            "fixed top-0 left-0 h-screen w-56 flex flex-col z-[101]",
+            "transition-transform duration-200 ease-in-out",
+            collapsed ? "-translate-x-full" : "translate-x-0",
+          )}
+        >
+          <BannerBackground variant="subtle" className="flex-1">
+            <SidebarContent collapsed={false} onClose={closeSidebar} />
+          </BannerBackground>
         </aside>
       </>
-    )
+    );
   }
 
+  // ── Desktop: fixed sidebar dengan toggle collapse ──────────────────────────
   return (
-    <aside style={{
-      width: collapsed ? 'var(--sidebar-collapsed)' : 'var(--sidebar-width)',
-      background: 'var(--sidebar-bg)',
-      display: 'flex', flexDirection: 'column',
-      transition: 'width 0.22s ease',
-      overflow: 'visible', flexShrink: 0,
-      height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 101,
-    }}>
-      <SidebarContent collapsed={collapsed} />
+    <aside
+      aria-label="Sidebar navigasi"
+      className={cn(
+        "fixed top-0 left-0 h-screen flex flex-col shrink-0 z-[101]",
+        "transition-[width] duration-200 ease-in-out overflow-visible",
+        collapsed ? "w-[60px]" : "w-[220px]",
+      )}
+    >
+      <BannerBackground
+        variant="subtle"
+        className="flex-1"
+        showDotTopRight={false}
+        showRingTopRight={true}
+      >
+        <SidebarContent collapsed={collapsed} />
+      </BannerBackground>
 
-      {/* Toggle button */}
+      {/* Tombol toggle collapse */}
       <button
         onClick={toggle}
-        aria-label="Toggle sidebar"
-        style={{
-          position: 'absolute', top: 18, right: -14,
-          width: 28, height: 28, border: 'none', borderRadius: '50%',
-          background: 'var(--fendm-primary)',
-          cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          color: 'rgba(255,255,255,0.8)', zIndex: 102,
-          boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
-        }}
+        aria-label={collapsed ? "Buka sidebar" : "Tutup sidebar"}
+        className={cn(
+          "absolute top-[18px] -right-3.5 w-7 h-7 rounded-full",
+          "bg-[#354F67] border-none cursor-pointer z-[102]",
+          "flex items-center justify-center text-white/80",
+          "shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:scale-110 transition-transform",
+        )}
       >
         {collapsed ? (
-          <svg width="10" height="10" viewBox="0 0 11 11" fill="none">
-            <path d="M3 2l5 3.5L3 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <ChevronRight size={12} strokeWidth={2} />
         ) : (
-          <svg width="10" height="10" viewBox="0 0 11 11" fill="none">
-            <path d="M8 2L3 5.5l5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <ChevronLeft size={12} strokeWidth={2} />
         )}
       </button>
     </aside>
-  )
+  );
 }
