@@ -20,7 +20,7 @@ export const useActiveTenantStore = create<ActiveTenantStore>()(
       setActiveTenantId: (id) => set({ activeTenantId: id }),
     }),
     {
-      name: 'soom-active-tenant', // Key di localStorage
+      name: 'fandm-active-tenant', // Key di localStorage
     }
   )
 )
