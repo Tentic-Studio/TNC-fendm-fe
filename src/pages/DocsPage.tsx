@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronRight, BookOpen, Tag, Package, Archive, Factory, ShoppingCart, Banknote } from 'lucide-react'
+import { useBreakpoint } from '../hooks/useBreakpoint'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Section {
@@ -95,62 +96,87 @@ const sections: Section[] = [
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState<number>(1)
+  const { isMobile } = useBreakpoint()
   const current = sections.find(s => s.id === activeSection)!
 
   return (
-    <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: isMobile ? 'column' : 'row', 
+      gap: isMobile ? 16 : 20, 
+      alignItems: 'flex-start' 
+    }}>
 
-      {/* ── Left nav ───────────────────────────────────────────────────── */}
+      {/* ── Left nav / Top nav on Mobile ─────────────────────────────────── */}
       <div style={{
-        width: 220, flexShrink: 0,
+        width: isMobile ? '100%' : 220, 
+        flexShrink: 0,
         background: 'white', border: '1px solid var(--fendm-border)',
-        borderRadius: 10, padding: '12px 8px',
-        position: 'sticky', top: 0,
+        borderRadius: 10, padding: isMobile ? '8px' : '12px 8px',
+        position: isMobile ? 'relative' : 'sticky', top: 0,
+        zIndex: 10,
+        display: 'flex',
+        flexDirection: isMobile ? 'column' : 'column',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 10px 12px', marginBottom: 4 }}>
+        <div style={{ 
+          display: 'flex', alignItems: 'center', gap: 8, 
+          padding: isMobile ? '8px 10px' : '4px 10px 12px', 
+          marginBottom: isMobile ? 0 : 4,
+          borderBottom: isMobile ? '1px solid var(--fendm-border)' : 'none'
+        }}>
           <BookOpen size={14} color="var(--fendm-primary)" />
           <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--fendm-text-dark)', letterSpacing: '0.3px' }}>
             Panduan FANDM
           </span>
         </div>
 
-        {sections.map(sec => (
-          <button
-            key={sec.id}
-            onClick={() => setActiveSection(sec.id)}
-            style={{
-              width: '100%', textAlign: 'left',
-              padding: '9px 12px', border: 'none', borderRadius: 8,
-              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10,
-              background: activeSection === sec.id ? sec.bg : 'transparent',
-              color: activeSection === sec.id ? sec.color : 'var(--fendm-text-muted)',
-              fontWeight: activeSection === sec.id ? 600 : 400,
-              fontSize: 12, marginBottom: 2,
-              transition: 'all 0.15s',
-            }}
-            onMouseOver={e => {
-              if (activeSection !== sec.id) e.currentTarget.style.background = 'var(--fendm-bg-light)'
-            }}
-            onMouseOut={e => {
-              if (activeSection !== sec.id) e.currentTarget.style.background = 'transparent'
-            }}
-          >
-            <span style={{ flexShrink: 0 }}>{sec.icon}</span>
-            <span>Section {sec.id}: {sec.title.split(' ').slice(2).join(' ') || sec.title}</span>
-          </button>
-        ))}
+        <div style={{ 
+          display: isMobile ? 'flex' : 'block', 
+          overflowX: isMobile ? 'auto' : 'visible',
+          gap: 8, padding: isMobile ? '10px 4px' : 0,
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}>
+          {sections.map(sec => (
+            <button
+              key={sec.id}
+              onClick={() => setActiveSection(sec.id)}
+              style={{
+                width: isMobile ? 'auto' : '100%', 
+                textAlign: 'left',
+                padding: isMobile ? '8px 14px' : '9px 12px', 
+                border: 'none', borderRadius: 8,
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 10,
+                background: activeSection === sec.id ? sec.bg : 'transparent',
+                color: activeSection === sec.id ? sec.color : 'var(--fendm-text-muted)',
+                fontWeight: activeSection === sec.id ? 600 : 400,
+                fontSize: 12, marginBottom: isMobile ? 0 : 2,
+                transition: 'all 0.15s',
+                whiteSpace: isMobile ? 'nowrap' : 'normal',
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ flexShrink: 0 }}>{sec.icon}</span>
+              {!isMobile ? (
+                 <span>Section {sec.id}: {sec.title.split(' ').slice(2).join(' ') || sec.title}</span>
+              ) : (
+                <span>Section {sec.id}</span>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* ── Content area ───────────────────────────────────────────────── */}
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, width: '100%' }}>
         {/* Section header */}
         <div style={{
           background: 'white', border: '1px solid var(--fendm-border)',
-          borderRadius: 10, padding: '20px 24px', marginBottom: 16,
-          display: 'flex', alignItems: 'center', gap: 16,
+          borderRadius: 10, padding: isMobile ? '16px' : '20px 24px', marginBottom: 16,
+          display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 16,
         }}>
           <div style={{
-            width: 44, height: 44, borderRadius: 10,
+            width: isMobile ? 36 : 44, height: isMobile ? 36 : 44, borderRadius: 10,
             background: current.bg, color: current.color,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0,
@@ -158,10 +184,10 @@ export default function DocsPage() {
             {current.icon}
           </div>
           <div>
-            <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--fendm-text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 4 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--fendm-text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', marginBottom: 2 }}>
               Section {current.id}
             </div>
-            <div style={{ fontSize: 17, fontWeight: 700, color: 'var(--fendm-text-dark)' }}>
+            <div style={{ fontSize: isMobile ? 15 : 17, fontWeight: 700, color: 'var(--fendm-text-dark)' }}>
               {current.title}
             </div>
           </div>
@@ -174,71 +200,77 @@ export default function DocsPage() {
               key={i}
               style={{
                 background: 'white', border: '1px solid var(--fendm-border)',
-                borderRadius: 10, padding: '16px 20px',
-                display: 'flex', gap: 16, alignItems: 'flex-start',
+                borderRadius: 10, padding: isMobile ? '14px' : '16px 20px',
+                display: 'flex', gap: isMobile ? 12 : 16, alignItems: 'flex-start',
                 transition: 'box-shadow 0.15s, transform 0.15s',
               }}
               onMouseOver={e => {
-                e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)'
-                e.currentTarget.style.transform = 'translateY(-1px)'
+                if (!isMobile) {
+                  e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,0,0,0.07)'
+                  e.currentTarget.style.transform = 'translateY(-1px)'
+                }
               }}
               onMouseOut={e => {
-                e.currentTarget.style.boxShadow = 'none'
-                e.currentTarget.style.transform = 'translateY(0)'
+                if (!isMobile) {
+                  e.currentTarget.style.boxShadow = 'none'
+                  e.currentTarget.style.transform = 'translateY(0)'
+                }
               }}
             >
               {/* Step number */}
               <div style={{
-                width: 28, height: 28, borderRadius: 8,
+                width: 24, height: 24, borderRadius: 6,
                 background: current.bg, color: current.color,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 12, fontWeight: 700, flexShrink: 0,
+                fontSize: 11, fontWeight: 700, flexShrink: 0,
               }}>
                 {i + 1}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--fendm-text-dark)', marginBottom: 4 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--fendm-text-dark)', marginBottom: 2 }}>
                   {step.title}
                 </div>
-                <div style={{ fontSize: 13, color: 'var(--fendm-text-muted)', lineHeight: 1.6 }}>
+                <div style={{ fontSize: 12, color: 'var(--fendm-text-muted)', lineHeight: 1.5 }}>
                   {step.desc}
                 </div>
               </div>
-              <ChevronRight size={14} color={current.color} style={{ flexShrink: 0, opacity: 0.5, marginTop: 6 }} />
+              {!isMobile && <ChevronRight size={14} color={current.color} style={{ flexShrink: 0, opacity: 0.5, marginTop: 4 }} />}
             </div>
           ))}
         </div>
 
         {/* Navigation buttons */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 20, gap: 10 }}>
           <button
             onClick={() => setActiveSection(s => Math.max(1, s - 1))}
             disabled={activeSection === 1}
             style={{
-              padding: '9px 18px', borderRadius: 8, border: '1px solid var(--fendm-border)',
+              padding: '9px 14px', borderRadius: 8, border: '1px solid var(--fendm-border)',
               background: 'white', cursor: activeSection === 1 ? 'not-allowed' : 'pointer',
-              fontSize: 12, fontWeight: 500, color: 'var(--fendm-text-muted)',
+              fontSize: 11, fontWeight: 500, color: 'var(--fendm-text-muted)',
               opacity: activeSection === 1 ? 0.4 : 1,
               transition: 'all 0.15s',
+              flex: 1,
             }}
           >
-            ← Section sebelumnya
+            {isMobile ? '← Prev' : '← Section sebelumnya'}
           </button>
-          <span style={{ fontSize: 12, color: 'var(--fendm-text-muted)', alignSelf: 'center' }}>
+          <span style={{ fontSize: 11, color: 'var(--fendm-text-muted)', alignSelf: 'center', whiteSpace: 'nowrap' }}>
             {activeSection} / {sections.length}
           </span>
           <button
             onClick={() => setActiveSection(s => Math.min(sections.length, s + 1))}
             disabled={activeSection === sections.length}
             style={{
-              padding: '9px 18px', borderRadius: 8, border: 'none',
+              padding: '9px 14px', borderRadius: 8, border: 'none',
               background: 'var(--fendm-primary)', cursor: activeSection === sections.length ? 'not-allowed' : 'pointer',
-              fontSize: 12, fontWeight: 500, color: 'white',
+              fontSize: 11, fontWeight: 500, color: 'white',
               opacity: activeSection === sections.length ? 0.4 : 1,
               transition: 'all 0.15s',
+              flex: 1,
             }}
           >
-            Section berikutnya →
+            {isMobile ? 'Next →' : 'Section berikutnya →'}
           </button>
         </div>
       </div>

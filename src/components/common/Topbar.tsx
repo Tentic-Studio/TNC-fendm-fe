@@ -1,10 +1,23 @@
+import { cn } from '@/lib/utils'
+import { authService } from '@/services/auth.service'
+import { TENANT_OPTIONS, useActiveTenantStore } from '@/store/useActiveTenantStore'
+import { Bell, CalendarIcon, ChevronDown, KeyRound, LogOut, Menu, Store, User } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSidebarStore } from '../../store/useSidebarStore'
+import { toast } from 'sonner'
+import { ROUTES } from '../../constants/routes'
 import { useBreakpoint } from '../../hooks/useBreakpoint'
 import { useAuthStore } from '../../store/useAuthStore'
-import { ROUTES } from '../../constants/routes'
-import { useState, useRef, useEffect } from 'react'
-import { User, KeyRound, LogOut, ChevronDown } from 'lucide-react'
+import { useSidebarStore } from '../../store/useSidebarStore'
+import { Button } from '../ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
 
 interface TopbarProps {
   breadcrumb: string[]
@@ -17,6 +30,8 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
   const navigate = useNavigate()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { activeTenantId, setActiveTenantId } = useActiveTenantStore();
+  const activeTenant = TENANT_OPTIONS.find(t => t.id === activeTenantId);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -29,54 +44,54 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [])
 
-  const handleLogout = () => {
-    clearAuth()
-    navigate(ROUTES.LOGIN)
+  const handleLogout = async () => {
+    try {
+      await authService.logout()
+    } catch (error) {
+      console.error(error)
+    } finally {
+      clearAuth()
+      navigate(ROUTES.LOGIN)
+    }
   }
 
   return (
-    <header style={{
-      height: 'var(--topbar-height)',
-      background: 'var(--topbar-bg)',
-      display: 'flex', alignItems: 'center',
-      padding: '0 20px', gap: 12,
-      position: 'fixed', top: 0, right: 0,
-      left: isMobile ? 0 : (collapsed ? 'var(--sidebar-collapsed)' : 'var(--sidebar-width)'),
-      zIndex: 99,
-      transition: 'left 0.22s ease',
-      boxShadow: '0 1px 0 var(--fendm-border)',
-    }}>
-
+    <header
+      className={cn(
+        "h-[var(--topbar-height)] bg-[var(--topbar-bg)] flex items-center px-5 gap-3 fixed top-0 right-0 z-[99] transition-[left] duration-200 ease-in-out shadow-[0_1px_0_var(--fandm-border)]",
+        isMobile
+          ? "left-0"
+          : collapsed
+            ? "left-[var(--sidebar-collapsed)]"
+            : "left-[var(--sidebar-width)]",
+      )}
+    >
       {/* Mobile — hamburger */}
       {isMobile && (
-        <button
+        <Button
+          variant="outline"
+          size="icon"
+          className="w-8 h-8 rounded-md text-[var(--fandm-text-muted)] border-[var(--fandm-border)] shrink-0"
           onClick={toggle}
-          style={{
-            width: 30, height: 30,
-            border: '1px solid var(--fendm-border)',
-            borderRadius: 7, background: 'none', cursor: 'pointer',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--fendm-text-muted)', flexShrink: 0,
-          }}
         >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-          </svg>
-        </button>
+          <Menu size={16} />
+        </Button>
       )}
 
       {/* Breadcrumb */}
-      <div style={{
-        flex: 1, display: 'flex', alignItems: 'center',
-        gap: 6, fontSize: 12, color: 'var(--fendm-text-muted)', overflow: 'hidden',
-      }}>
+      <div className="flex-1 flex items-center gap-1.5 text-xs text-[var(--fandm-text-muted)] overflow-hidden">
         {breadcrumb.map((crumb, i) => (
-          <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
-            {i > 0 && <span style={{ color: 'var(--fendm-border)', fontSize: 14 }}>›</span>}
-            <span style={i === breadcrumb.length - 1
-              ? { color: 'var(--fendm-text-dark)', fontWeight: 500, fontSize: 13 }
-              : {}
-            }>
+          <span key={i} className="flex items-center gap-1.5 whitespace-nowrap">
+            {i > 0 && (
+              <span className="text-[var(--fandm-border)] text-sm">›</span>
+            )}
+            <span
+              className={
+                i === breadcrumb.length - 1
+                  ? "text-[var(--fandm-text-dark)] font-medium text-[13px]"
+                  : ""
+              }
+            >
               {crumb}
             </span>
           </span>
@@ -84,156 +99,136 @@ export default function Topbar({ breadcrumb }: TopbarProps) {
       </div>
 
       {/* Right actions */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-
+      <div className="flex items-center gap-2">
         {/* Date — hide on mobile */}
         {!isMobile && (
-          <div style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            padding: '5px 10px',
-            border: '1px solid var(--fendm-border)', borderRadius: 7,
-            background: 'white',
-            fontSize: 12, color: 'var(--fendm-text-dark)', fontWeight: 500, cursor: 'pointer',
-          }}>
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-              <rect x="1" y="1.5" width="10" height="9" rx="1.2" stroke="currentColor" strokeWidth="1.1" />
-              <path d="M3.5 1v1.5M8.5 1v1.5M1 5h10" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-            </svg>
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[var(--fandm-border)] rounded-md bg-white text-xs text-[var(--fandm-text-dark)] font-medium cursor-pointer">
+            <CalendarIcon size={14} className="text-slate-500" />
             Hari ini
-            <svg width="8" height="8" viewBox="0 0 8 5" fill="none">
-              <path d="M1 1l3 3 3-3" stroke="currentColor" strokeWidth="1.1" strokeLinecap="round" />
-            </svg>
+            <ChevronDown size={12} className="text-slate-400 ml-1" />
+          </div>
+        )}
+
+        {/* Tenant Switcher Dropdown */}
+        {user?.role === "superadmin" ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[var(--fandm-border)] bg-white hover:bg-slate-50 transition-colors rounded-md text-xs font-semibold text-slate-700 cursor-pointer shadow-xs">
+                <Store size={13} className="text-indigo-600 shrink-0" />
+                <span>{activeTenant?.name ?? "Pilih Tenant"}</span>
+                <ChevronDown size={12} className="text-slate-400 ml-0.5" />
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 p-1 border-[var(--fandm-border)] rounded-xl shadow-lg mt-1">
+              <DropdownMenuLabel className="p-2.5 pb-1.5 border-b border-[var(--fandm-border)] mb-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Pilih Cabang / Tenant
+              </DropdownMenuLabel>
+              {TENANT_OPTIONS.map((t) => (
+                <DropdownMenuItem
+                  key={t.id}
+                  onClick={() => {
+                    setActiveTenantId(t.id);
+                    toast.success(`Cabang aktif dialihkan ke: ${t.name}`);
+                  }}
+                  className={cn(
+                    "text-xs py-2 px-2.5 cursor-pointer rounded-md flex items-center justify-between",
+                    activeTenantId === t.id ? "bg-indigo-50 text-indigo-700 font-bold" : "text-slate-700"
+                  )}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className={cn("h-1.5 w-1.5 rounded-full", t.is_active ? "bg-green-500 animate-pulse" : "bg-slate-300")} />
+                    <span>{t.name}</span>
+                  </div>
+                  <span className="font-mono text-[9px] text-slate-400">{t.code}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="flex items-center gap-1.5 px-2.5 py-1.5 border border-[var(--fandm-border)] bg-slate-50 rounded-md text-xs font-semibold text-slate-500 cursor-default shadow-xs">
+            <Store size={13} className="text-slate-400 shrink-0" />
+            <span>{activeTenant?.name ?? "Pilih Tenant"}</span>
           </div>
         )}
 
         {/* Notification */}
-        <button style={{
-          width: 30, height: 30,
-          border: '1px solid var(--fendm-border)', borderRadius: 7,
-          background: 'none', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          position: 'relative',
-        }}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 1a4.5 4.5 0 0 1 4.5 4.5V9l1.5 2H1L2.5 9V5.5A4.5 4.5 0 0 1 7 1z" stroke="var(--fendm-text-muted)" strokeWidth="1.2" />
-            <path d="M5.5 12a1.5 1.5 0 0 0 3 0" stroke="var(--fendm-text-muted)" strokeWidth="1.2" />
-          </svg>
-          <span style={{
-            position: 'absolute', top: 5, right: 5,
-            width: 6, height: 6, background: '#E24B4A',
-            borderRadius: '50%', border: '1.5px solid white',
-          }} />
-        </button>
+        <Button
+          variant="outline"
+          size="icon"
+          className="w-8 h-8 rounded-md border-[var(--fandm-border)] relative"
+        >
+          <Bell size={14} className="text-[var(--fandm-text-muted)]" />
+          <span className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-white" />
+        </Button>
 
         {/* Avatar + Dropdown */}
-        <div ref={menuRef} style={{ position: 'relative' }}>
-          <div
-            onClick={() => setShowUserMenu(v => !v)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              cursor: 'pointer', padding: '4px 8px',
-              borderRadius: 8, border: '1px solid var(--fendm-border)',
-              background: 'white',
-            }}
-          >
-            <div style={{
-              width: 26, height: 26, borderRadius: '50%',
-              background: 'var(--accent)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 10, fontWeight: 700, color: 'white', flexShrink: 0,
-            }}>
-              {user?.name?.charAt(0).toUpperCase() ?? 'A'}
-            </div>
-            {!isMobile && (
-              <span style={{ fontSize: 12, fontWeight: 500, color: 'var(--fendm-text-dark)', whiteSpace: 'nowrap' }}>
-                {user?.name ?? 'Admin FENDM'}
-              </span>
-            )}
-            <ChevronDown size={12} color="var(--fendm-text-muted)" />
-          </div>
-
-          {/* Dropdown menu */}
-          {showUserMenu && (
-            <div style={{
-              position: 'absolute', top: '110%', right: 0,
-              background: 'white',
-              border: '1px solid var(--fendm-border)',
-              borderRadius: 10,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-              minWidth: 200, zIndex: 200, overflow: 'hidden',
-            }}>
-              {/* User info header */}
-              <div style={{ padding: '12px 16px', borderBottom: '1px solid var(--fendm-border)' }}>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--fendm-text-dark)' }}>{user?.name ?? 'Admin'}</div>
-                <div style={{ fontSize: 11, color: 'var(--fendm-text-muted)', marginTop: 2 }}>{user?.email ?? ''}</div>
-                <span style={{
-                  display: 'inline-block', marginTop: 6,
-                  fontSize: 10, padding: '2px 8px', borderRadius: 4,
-                  background: '#E3F2FB', color: '#1565A0', fontWeight: 500,
-                }}>
-                  {user?.role ?? 'admin'}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-md border border-[var(--fandm-border)] bg-white hover:bg-slate-50 transition-colors">
+              <div className="w-6 h-6 rounded-full bg-[var(--fandm-primary-light)] flex items-center justify-center text-[10px] font-bold text-white shrink-0">
+                {user?.name?.charAt(0).toUpperCase() ?? "A"}
+              </div>
+              {!isMobile && (
+                <span className="text-xs font-medium text-[var(--fandm-text-dark)] whitespace-nowrap">
+                  {user?.name ?? "Admin FANDM"}
                 </span>
-              </div>
-
-              {/* Profile section */}
-              <div style={{ padding: '6px 8px', borderBottom: '1px solid var(--fendm-border)' }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--fendm-text-muted)', textTransform: 'uppercase', letterSpacing: '0.6px', padding: '4px 8px 2px' }}>
-                  Akun
-                </div>
-                <button
-                  onClick={() => { navigate(ROUTES.PROFILE); setShowUserMenu(false) }}
-                  style={{
-                    width: '100%', textAlign: 'left',
-                    padding: '8px 10px', border: 'none', background: 'none',
-                    fontSize: 12, color: 'var(--fendm-text-dark)', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 8, borderRadius: 6,
-                    transition: 'background 0.1s',
-                  }}
-                  onMouseOver={e => e.currentTarget.style.background = 'var(--fendm-bg-light)'}
-                  onMouseOut={e => e.currentTarget.style.background = 'none'}
-                >
-                  <User size={13} color="var(--fendm-text-muted)" />
-                  Profile
-                </button>
-                <button
-                  onClick={() => { navigate(ROUTES.CHANGE_PASSWORD); setShowUserMenu(false) }}
-                  style={{
-                    width: '100%', textAlign: 'left',
-                    padding: '8px 10px', border: 'none', background: 'none',
-                    fontSize: 12, color: 'var(--fendm-text-dark)', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 8, borderRadius: 6,
-                    transition: 'background 0.1s',
-                  }}
-                  onMouseOver={e => e.currentTarget.style.background = 'var(--fendm-bg-light)'}
-                  onMouseOut={e => e.currentTarget.style.background = 'none'}
-                >
-                  <KeyRound size={13} color="var(--fendm-text-muted)" />
-                  Ganti Password
-                </button>
-              </div>
-
-              {/* Logout */}
-              <div style={{ padding: '6px 8px' }}>
-                <button
-                  onClick={handleLogout}
-                  style={{
-                    width: '100%', textAlign: 'left',
-                    padding: '8px 10px', border: 'none', background: 'none',
-                    fontSize: 12, color: '#ef4444', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: 8, borderRadius: 6,
-                    transition: 'background 0.1s',
-                  }}
-                  onMouseOver={e => e.currentTarget.style.background = '#FFF5F5'}
-                  onMouseOut={e => e.currentTarget.style.background = 'none'}
-                >
-                  <LogOut size={13} />
-                  Logout
-                </button>
-              </div>
+              )}
+              <ChevronDown
+                size={12}
+                className="text-[var(--fandm-text-muted)]"
+              />
             </div>
-          )}
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            className="w-56 p-1 border-[var(--fandm-border)] rounded-xl shadow-lg mt-1"
+          >
+            <DropdownMenuLabel className="p-3 pb-2 border-b border-[var(--fandm-border)] mb-1">
+              <div className="text-[13px] font-semibold text-[var(--fandm-text-dark)]">
+                {user?.name ?? "Admin"}
+              </div>
+              <div className="text-[11px] text-[var(--fandm-text-muted)] mt-0.5">
+                {user?.email ?? ""}
+              </div>
+              <span className="inline-block mt-1.5 text-[10px] px-2 py-0.5 rounded bg-[#E3F2FB] text-[#1565A0] font-medium">
+                {user?.role ?? "admin"}
+              </span>
+            </DropdownMenuLabel>
 
+            <div className="px-2 py-1 text-[10px] font-semibold text-[var(--fandm-text-muted)] uppercase tracking-widest mt-1">
+              Akun
+            </div>
+
+            <DropdownMenuItem
+              className="text-xs text-[var(--fandm-text-dark)] py-2 px-2.5 cursor-pointer rounded-md focus:bg-[var(--fandm-bg-light)]"
+              onClick={() => navigate(ROUTES.PROFILE)}
+            >
+              <User size={14} className="text-[var(--fandm-text-muted)] mr-2" />
+              Profile
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="text-xs text-[var(--fandm-text-dark)] py-2 px-2.5 cursor-pointer rounded-md focus:bg-[var(--fandm-bg-light)]"
+              onClick={() => navigate(ROUTES.CHANGE_PASSWORD)}
+            >
+              <KeyRound
+                size={14}
+                className="text-[var(--fandm-text-muted)] mr-2"
+              />
+              Ganti Password
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator className="bg-[var(--fandm-border)] my-1" />
+
+            <DropdownMenuItem
+              className="text-xs text-red-500 py-2 px-2.5 cursor-pointer rounded-md focus:bg-red-50 focus:text-red-600"
+              onClick={handleLogout}
+            >
+              <LogOut size={14} className="mr-2" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )
